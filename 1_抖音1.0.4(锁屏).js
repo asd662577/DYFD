@@ -4,7 +4,7 @@ importClass(android.content.Intent);
 importClass(android.net.Uri);
 importClass(android.provider.Settings);
 importClass(android.view.WindowManager);
-var mname = '淞沪'
+var mname = '福袋'
 var mversion = '1.0.1'
 var mclolor = '#4EBFDD'
 var scriptTitle = mname + ' v' + mversion
@@ -387,11 +387,16 @@ function setFD() {
                             console.log("将在", Math.round((SDDT / configData.timeM)), "分" + Math.round((SDDT % configData.timeM) / 1000), "秒后点击");
                             console.log("点击后剩余时间：", Math.round(RTime/1000), "秒");
                             device.keepScreenDim(500);
+                            //锁屏
                             var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
                                 
                             console.log("锁屏（003）");
                             sleep(SDDT - 500);
-                            if(!device.isScreenOn()) { device.wakeUp();  sleep(150); swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（003）");}
+                            if(!device.isScreenOn()) { 
+                                device.wakeUp();  
+                                sleep(800); 
+                                swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（003）");
+                            }
                         }
 
                         if (text("加入粉丝团").findOnce()) {
@@ -410,7 +415,10 @@ function setFD() {
                             var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
                             console.log("锁屏（002）");
                             sleep(60000 * 5 - 500);
-                            if(!device.isScreenOn()) { device.wakeUp();  sleep(150); swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（002）");}
+                            if(!device.isScreenOn()) { 
+                                device.wakeUp();  
+                                sleep(800); 
+                                swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（002）");}
                             return true;
                         }
 
@@ -463,7 +471,10 @@ function setFD() {
                             }
                             sleep(RTime);
                         }
-                        if(!device.isScreenOn()) { device.wakeUp();  sleep(150); swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（001）");}
+                        if(!device.isScreenOn()) { 
+                            device.wakeUp();  
+                        sleep(800); 
+                        swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（001）");}
                     }
                 }
             } else {
