@@ -483,6 +483,47 @@ function setFD() {
         }
     } else {
         console.log("没有福袋");
+        
+        if (text("加入粉丝团").findOnce()) {
+            console.log("加入粉丝团");
+            clickBtn(text("加入粉丝团").findOnce())
+            sleep(500);
+            if (text("加入粉丝团").findOnce()) {
+                console.log("加入粉丝团");
+                clickBtn(text("加入粉丝团").findOnce())
+                back()
+            }
+        }
+        if (text("观看直播5分钟").findOnce() && clickBtn(text("开始观看直播任务").findOnce()) ) {
+            console.log("开始观看直播任务，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+            device.keepScreenDim(500);
+            var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
+            console.log("锁屏（002）");
+            sleep(60000 * 5 - 500);
+            if(!device.isScreenOn()) { 
+                device.wakeUp();  
+                sleep(800); 
+                swipe(200, device.height / 5 * 4, 400, device.height / 5, 201); console.log("屏幕已开启（002）");}
+            return true;
+        }
+        if (clickBtn(text("一键发表评论").findOnce())) {
+            console.log("参与福袋，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+            clickBtn(text("我知道了").findOnce())
+            return true;
+        }
+        else if (clickBtn(text("参与抽奖").findOnce())) {
+            console.log("参与抽奖，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+            clickBtn(text("我知道了").findOnce())
+            return true;
+        }
+        if (text("参与抽奖").findOnce()) {
+            console.log("参与成功 等待开奖");
+            back()
+        }
+        if (text("一键发表评论").findOnce()) {
+            console.log("参与成功 等待开奖");
+            back()
+        }
         if (text("参与成功 等待开奖").findOnce()) {
             console.log("参与成功 等待开奖");
             back()
