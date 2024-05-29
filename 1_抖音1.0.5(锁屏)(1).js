@@ -165,6 +165,8 @@ configIDArr = UIstr.match(/ id( )?=( )?["|'].*?["|']/g).map(item => item.replace
 ui.statusBarColor(mclolor);
 ui.layout(UIstr);
 
+wakeUp("");
+
 function ScriptUI() {
     <vertical>
         <appbar>
@@ -309,6 +311,7 @@ function onStart() {
                     {
                         console.log("啥也没发现02");
                         jiance()
+                        console.log("啥也没发现02-继续");
                         AboutFD()
                     }
                 }
@@ -385,103 +388,111 @@ function setFD() {
             // 判断是否包含数字
             if (!IsFDT(FDtime) && V559387(FDtime)) {
                 console.log("福袋时间：", FDtime);
-                var FD_T = FDtime.split(" ")
-                var FD_M = FD_T[1].split("分")
-                var FD_S = FD_M[1].split("秒")
-                //获取剩余时间
-                let DDt = addF((parseInt(FD_M[0] * 60000)), parseInt(FD_S[0] * 1000));
-                if (DDt) {
-                    console.log("等待时间秒：", DDt, "秒");
-                    console.log("规定等待时间秒：", userInfo.mtime * configData.timeM, "秒");
-                    if (clickBtn(FD)) {
-                        console.log("点击福袋");
-                        //随机25~85秒
-                        let RTime = 5000;
-                        if (DDt > 85000) {
-                            RTime = random(25000, 85000);
-                            let SDDT = DDt - RTime;
-                            // if(SDDT > 15000){SDDT = 15000}; //测试使用快速
-                            console.log("将在", Math.round((SDDT / configData.timeM)), "分" + Math.round((SDDT % configData.timeM) / 1000), "秒后点击");
-                            console.log("点击后剩余时间：", Math.round(RTime/1000), "秒");
-                            device.keepScreenDim(500);
-                            //锁屏
-                            var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
-                                
-                            console.log("锁屏（003）");
-                             WiteTime(SDDT - 1500);
-                             wakeUp("003");
-                        }
-
-                        if (text("加入粉丝团").findOnce()) {
-                            console.log("加入粉丝团");
-                            clickBtn(text("加入粉丝团").findOnce())
-                             WiteTime(500);
+                //判断FDtime中是否包含分秒
+                if (FDtime.indexOf("分") == -1 ||  FDtime.indexOf("秒") == -1) {
+                    console.log("没有分秒异常操作：", FDtime);
+                    jiance()
+                }
+                else
+                {
+                    var FD_T = FDtime.split(" ")
+                    var FD_M = FD_T[1].split("分")
+                    var FD_S = FD_M[1].split("秒")
+                    //获取剩余时间
+                    let DDt = addF((parseInt(FD_M[0] * 60000)), parseInt(FD_S[0] * 1000));
+                    if (DDt) {
+                        console.log("等待时间秒：", DDt, "秒");
+                        console.log("规定等待时间秒：", userInfo.mtime * configData.timeM, "秒");
+                        if (clickBtn(FD)) {
+                            console.log("点击福袋");
+                            //随机25~85秒
+                            let RTime = 5000;
+                            if (DDt > 85000) {
+                                RTime = random(35000, 85000);
+                                let SDDT = DDt - RTime;
+                                // if(SDDT > 15000){SDDT = 15000}; //测试使用快速
+                                console.log("将在", Math.round((SDDT / configData.timeM)), "分" + Math.round((SDDT % configData.timeM) / 1000), "秒后点击");
+                                console.log("点击后剩余时间：", Math.round(RTime/1000), "秒");
+                                device.keepScreenDim(500);
+                                //锁屏
+                                var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
+                                    
+                                console.log("锁屏（003）");
+                                 WiteTime(SDDT - 1500);
+                                 wakeUp("003");
+                            }
+    
                             if (text("加入粉丝团").findOnce()) {
                                 console.log("加入粉丝团");
                                 clickBtn(text("加入粉丝团").findOnce())
-                                back()
+                                 WiteTime(500);
+                                if (text("加入粉丝团").findOnce()) {
+                                    console.log("加入粉丝团");
+                                    clickBtn(text("加入粉丝团").findOnce())
+                                    back()
+                                }
                             }
-                        }
-                        if (text("观看直播5分钟").findOnce() && clickBtn(text("开始观看直播任务").findOnce()) ) {
-                            console.log("开始观看直播任务，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
-                            device.keepScreenDim(500);
-                            var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
-                            console.log("锁屏（002）");
-                             WiteTime(60000 * 5 - 500);
-                             wakeUp("002");
-                            return true;
-                        }
-
-                        // if (text("加入粉丝团 (1钻石)").findOnce()) {
-                        //     console.log("加入粉丝团 (1钻石");
-                        //     clickBtn(text("加入粉丝团 (1钻石)").findOnce())
-                        // }
-                        var isSleep = false;
-                        if (clickBtn(text("一键发表评论").findOnce())) {
-                            console.log("参与福袋，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
-                            isSleep = true;
-                            clickBtn(text("我知道了").findOnce())
-                            return true;
-                        }
-                        else if (clickBtn(text("参与抽奖").findOnce())) {
-                            console.log("参与抽奖，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
-                            isSleep = true;
-                            clickBtn(text("我知道了").findOnce())
-                            return true;
-                        }
-                        else {
-                            if (text("参与成功 等待开奖").findOnce()) {
-                                console.log("参与成功 等待开奖(01)");
-                                isSleep = true;
-                            }
-
-                            if (text("开始观看直播任务").findOnce()) {
-                                clickBtn(text("开始观看直播任务").findOnce())
-                                console.log("开始观看直播任务01");
-                                back()
-                                isSleep = true;
-                            }
-
-                            if (text("即将开奖 无法参与").findOnce()) {
-                                //clickBtn(text("即将开奖 无法参与").findOnce())
-                                console.log("即将开奖 无法参与");
-                                back()
-                                isSleep = true;
-                            }
-                        }
-
-                        if(isSleep)
-                        {
-                            // 任务完成后，延迟一段时间（例如2秒）再锁屏，防止立即锁屏导致任务未完成
-                            if (RTime > 15000) {
+                            if (text("观看直播5分钟").findOnce() && clickBtn(text("开始观看直播任务").findOnce()) ) {
+                                console.log("开始观看直播任务，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
                                 device.keepScreenDim(500);
                                 var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
-                                console.log("锁屏");
-                                RTime = RTime - 2000;
+                                console.log("锁屏（002）");
+                                 WiteTime(60000 * 5 - 500);
+                                 wakeUp("002");
+                                return true;
                             }
-                             WiteTime(RTime);
+    
+                            // if (text("加入粉丝团 (1钻石)").findOnce()) {
+                            //     console.log("加入粉丝团 (1钻石");
+                            //     clickBtn(text("加入粉丝团 (1钻石)").findOnce())
+                            // }
+                            var isSleep = false;
+                            if (clickBtn(text("一键发表评论").findOnce())) {
+                                console.log("参与福袋，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+                                isSleep = true;
+                                clickBtn(text("我知道了").findOnce())
+                                return true;
+                            }
+                            else if (clickBtn(text("参与抽奖").findOnce())) {
+                                console.log("参与抽奖，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+                                isSleep = true;
+                                clickBtn(text("我知道了").findOnce())
+                                return true;
+                            }
+                            else {
+                                if (text("参与成功 等待开奖").findOnce()) {
+                                    console.log("参与成功 等待开奖(01)");
+                                    isSleep = true;
+                                }
+    
+                                if (text("开始观看直播任务").findOnce()) {
+                                    clickBtn(text("开始观看直播任务").findOnce())
+                                    console.log("开始观看直播任务01");
+                                    back()
+                                    isSleep = true;
+                                }
+
+                                if (text("即将开奖 无法参与").findOnce()) {
+                                    //clickBtn(text("即将开奖 无法参与").findOnce())
+                                    console.log("即将开奖 无法参与");
+                                    back()
+                                    isSleep = true;
+                                }
+                            }
+    
+                            if(isSleep)
+                            {
+                                // 任务完成后，延迟一段时间（例如2秒）再锁屏，防止立即锁屏导致任务未完成
+                                if (RTime > 15000) {
+                                    device.keepScreenDim(500);
+                                    var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
+                                    console.log("锁屏");
+                                    RTime = RTime - 2000;
+                                }
+                                 WiteTime(RTime);
+                            }
+                           wakeUp("001");
                         }
-                       wakeUp("001");
                     }
                 }
             } else {
@@ -489,7 +500,7 @@ function setFD() {
             }
         }
     } else {
-        console.log("没有福袋");
+        // console.log("没有福袋");
         jiance();
         // qiehuan()
         return false
@@ -566,20 +577,27 @@ function clickBtn(btn) {
 //定时器 （休眠）
 function WiteTime(t)
 {
-    var wT = 1000 * 10; //10秒打印一次
-    var s = Math.floor(t / wT);
-    //向下取整
-    var ms = t - s * wT;
-    console.log("剩余" + s * 10  + "秒" + ms + "毫秒");
-    if(s > 0 )
+    var ms = t ;
+    if(true)
     {
-        //毫秒将时间转为秒 循环每秒打印一次
-        for (var i = 0; i < s; i++) {
-            console.log("倒计时" + (s - i) * 10 + "秒");
-            sleep(1000 * 10);
+        var wT = 1000 * 10; //10秒打印一次 
+        var s = Math.floor(t / wT);
+        //向下取整
+        ms = t - s * wT;
+        console.log("剩余" + s * 10  + "秒" + ms + "毫秒");
+        if(s > 0 )
+        {
+            //毫秒将时间转为秒 循环每秒打印一次
+            for (var i = 0; i < s; i++) {
+                console.log("倒计时" + (s - i) * 10 + "秒");
+                sleep(1000 * 10);
+            }
         }
     }
-    sleep(ms);
+    else
+    {
+        sleep(ms);
+    }
 }
 
 //打开屏幕
@@ -588,72 +606,84 @@ function wakeUp(msg)
     if(!device.isScreenOn()) { 
         device.wakeUp();  
         WiteTime(800); 
-        swipe(200, device.height / 5 * 4, 400, device.height / 5, 201);
-        console.log("屏幕被开启(" + msg+")");
+       // swipe(200, device.height / 5 * 4, 400, device.height / 5, 201);
     }
-    console.log("屏幕已开启(" + msg+")");
+    console.log("当前电量(" + device.getBattery()+"%)  " + logZBJname());
+    // console.log("屏幕已开启(" + msg+")");
 }
 
+function logZBJname()
+{
+
+    let TextView = className("android.widget.TextView").id("user_name").findOnce();
+    if (TextView) {
+        let OOO0OOO0O0OOOOO0O = TextView.getText();
+        OOO0OOO0O0OOOOO0O = "已在直播间：" + OOO0OOO0O0OOOOO0O;
+        // console.log(, OOO0OOO0O0OOOOO0O);
+        return OOO0OOO0O0OOOOO0O;
+    }
+    return "";
+}
 
 function jiance() {
     if (text("加入粉丝团").findOnce()) {
-        console.log("加入粉丝团");
+        // console.log("加入粉丝团");
         clickBtn(text("加入粉丝团").findOnce())
          WiteTime(500);
         if (text("加入粉丝团").findOnce()) {
-            console.log("加入粉丝团");
+            // console.log("加入粉丝团");
             clickBtn(text("加入粉丝团").findOnce())
             back()
         }
     }
     if (text("观看直播5分钟").findOnce() && clickBtn(text("开始观看直播任务").findOnce()) ) {
-        console.log("开始观看直播任务，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+        // console.log("开始观看直播任务，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
         device.keepScreenDim(500);
         var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
-        console.log("锁屏（002）");
+        // console.log("锁屏（002）");
          WiteTime(60000 * 5 - 500);
          wakeUp("观看直播5分钟");
         return true;
     }
     if (clickBtn(text("一键发表评论").findOnce())) {
-        console.log("参与福袋，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+        // console.log("参与福袋，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
         clickBtn(text("我知道了").findOnce())
         return true;
     }
     else if (clickBtn(text("参与抽奖").findOnce())) {
-        console.log("参与抽奖，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
+        // console.log("参与抽奖，福袋时间为：", Math.round((DDt / configData.timeM)), "分钟")
         clickBtn(text("我知道了").findOnce())
         return true;
     }
     if (text("参与抽奖").findOnce()) {
-        console.log("参与成功 等待开奖(02)");
+        // console.log("参与成功 等待开奖(02)");
         back()
     }
     if (text("一键发表评论").findOnce()) {
-        console.log("参与成功 等待开奖(03)");
+        // console.log("参与成功 等待开奖(03)");
         back()
     }
     if (text("参与成功 等待开奖").findOnce()) {
-        console.log("参与成功 等待开奖(04)");
+        // console.log("参与成功 等待开奖(04)");
         back()
     }
     if (text("我知道了").findOnce()) {
-        clickBtn(text("我知道了").findOnce())
-        console.log("我知道了");
+        // clickBtn(text("我知道了").findOnce())
+        // console.log("我知道了");
     }
     if (text("活动已结束").findOnce()) {
         //clickBtn(text("活动已结束").findOnce())
-        console.log("活动已结束");
+        // console.log("活动已结束");
         back()
     }
     if (text("即将开奖 无法参与").findOnce()) {
         //clickBtn(text("即将开奖 无法参与").findOnce())
-        console.log("即将开奖 无法参与");
+        // console.log("即将开奖 无法参与");
         back()
     }
     if (text("开始观看直播任务").findOnce()) {
         clickBtn(text("开始观看直播任务").findOnce())
-        console.log("开始观看直播任务02");
+        // console.log("开始观看直播任务02");
         back()
     }
 }
