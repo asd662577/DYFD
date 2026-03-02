@@ -6,5 +6,3 @@
 # 注意事项
 该程序只能作为学习研究使用，不能用于非法用途，否则后果自负
 
-Use this token to access the HTTP API:
-8750842868:AAGAisBc6N3QvV_pVMlZITZ5jtmbEGUi6O8
